@@ -1,11 +1,14 @@
-const ImageCard = ({ article }) => {
+import css from './ImageCard.module.css';
+
+const ImageCard = ({ img, onImageClick }) => {
   return (
-    <div>
+    <div className={css.galleryCard}>
       <img
-        src={article.urls.small}
-        alt={article.alt_description}
+        onClick={() => onImageClick(img)}
+        src={img.urls.small}
+        alt={img.alt_description}
         width={346}
-        height={240}
+        height={180}
       />
     </div>
   );

@@ -1,0 +1,38 @@
+.modal {
+  position: absolute;
+  outline: transparent;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  overflow: hidden;
+  transform: translate(-50%, -50%);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.ImageModalInfo {
+  position: absolute;
+  bottom: 0;
+  color: aliceblue;
+  font-size: larger;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 5px;
+  padding-right: 5px;
+  background-color: rgba(83, 68, 84, 0.7);
+}
+
+.autorInfo {
+  display: flex;
+  gap: 20px;
+}

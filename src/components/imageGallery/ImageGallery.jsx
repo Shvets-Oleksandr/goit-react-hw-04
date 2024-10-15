@@ -2,15 +2,15 @@ import ImageCard from '../imageCard/ImageCard';
 
 import css from './ImageGallery.module.css';
 
-const ImageGallery = ({ articles }) => {
+const ImageGallery = ({ imgs, onImageClick }) => {
   return (
     <section className={css.gellaryContainer}>
       <ul className={css.list}>
-        {Array.isArray(articles) &&
-          articles.map(article => {
+        {Array.isArray(imgs) &&
+          imgs.map(img => {
             return (
-              <li key={article.id} className={css.listItem}>
-                <ImageCard article={article} />
+              <li key={img.id} className={css.listItem}>
+                <ImageCard img={img} onImageClick={onImageClick} />
               </li>
             );
           })}

@@ -1,47 +1,68 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-import axios from 'axios';
+import { axiosImg } from '../../services/api';
 
 import SearchBar from '../searchBar/SearchBar';
 import Loder from '../loader/Loader';
 import ErrrMessage from '../errorMessage/ErrorMessage';
 import ImageGallery from '../imageGallery/ImageGallery';
+import LoadMoreBtn from '../loadMoreBtn/LoadMoreBtn';
+import ImageModal from '../imageModal/ImageModal';
 
 import css from './App.module.css';
 
 function App() {
-  const [articles, setArticles] = useState(null);
+  const [query, setQuery] = useState('');
+  const [imgs, setImgs] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
-    async function fetchArticles() {
+    if (!query) return;
+    const fetchImg = async () => {
       try {
         setIsLoading(true);
-        const responce = await axios.get(
-          'https://api.unsplash.com/search/photos',
-          {
-            params: {
-              client_id: 'Gozi7hKDRuFHQPe2kGfSCz7Wn_z4Z8vgzcDhyUSmr-c',
-              query: 'car',
-              per_page: 12,
-            },
-          }
-        );
-        setArticles(responce.data.results);
-        console.log(responce.data);
+        setError(false);
+        const { data } = await axiosImg(query, page);
+        if (page !== 1) {
+          setImgs(prevImgs => [...prevImgs, ...data.results]);
+        } else {
+          setImgs(data.results);
+        }
+        setTotalPages(data.total_pages);
       } catch (error) {
         setError(true);
       } finally {
         setIsLoading(false);
       }
-    }
-    fetchArticles();
-  }, []);
+    };
 
-  const onSubmit = searchValue => {
-    console.log(searchValue);
+    fetchImg();
+  }, [query, page]);
+
+  const onSubmit = async inputValue => {
+    setQuery(inputValue);
+    setPage(1);
+  };
+
+  const handleClick = async () => {
+    setPage(prevPage => prevPage + 1);
+  };
+
+  const openModal = image => {
+    setSelectedImage(image);
+    setIsModalOpen(true);
+    console.log(selectedImage);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    // setSelectedImage(null);
   };
 
   return (
@@ -49,7 +70,22 @@ function App() {
       <SearchBar onSubmit={onSubmit} />
       {isLoading && <Loder />}
       {error && <ErrrMessage />}
-      <ImageGallery articles={articles} />
+      {imgs && imgs.length === 0 && !isLoading && (
+        <p>No results found for &quot;{query}&quot;</p>
+      )}
+      <ImageGallery imgs={imgs} onImageClick={openModal} />
+      {page < totalPages && <LoadMoreBtn handleClick={handleClick} />}
+      {selectedImage && (
+        <ImageModal
+          isOpen={isModalOpen}
+          onRequestClose={closeModal}
+          imageUrl={selectedImage.urls.regular}
+          alt={selectedImage.alt_description}
+          likes={selectedImage.likes}
+          autor={selectedImage.user.first_name}
+          autorImg={selectedImage.user.profile_image.large}
+        />
+      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import ReactModal from 'react-modal';
-import { BiSolidLike } from 'react-icons/bi';
+import { FaHeart } from 'react-icons/fa';
 
 import css from './ImageModal.module.css';
 
@@ -29,12 +29,14 @@ const ImageModal = ({
         height={670}
       />
       <div className={css.ImageModalInfo}>
-        <p>
-          <BiSolidLike /> {likes}
-        </p>
+        <div className={css.likes}>
+          <FaHeart />
+          {likes}
+        </div>
         <div className={css.autorInfo}>
           <p>Autor: {autor}</p>
           <img
+            className={css.autorImg}
             src={autorImg}
             alt="Autor profile foto"
             width={50}

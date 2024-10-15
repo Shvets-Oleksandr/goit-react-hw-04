@@ -45,9 +45,19 @@ function App() {
     fetchImg();
   }, [query, page]);
 
+  useEffect(() => {
+    if (page > 1 && imgs && imgs.length > 0) {
+      window.scrollBy({
+        top: window.innerHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [imgs]);
+
   const onSubmit = async inputValue => {
     setQuery(inputValue);
     setPage(1);
+    setImgs(null);
   };
 
   const handleClick = async () => {
@@ -57,24 +67,27 @@ function App() {
   const openModal = image => {
     setSelectedImage(image);
     setIsModalOpen(true);
-    console.log(selectedImage);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    // setSelectedImage(null);
+    setSelectedImage(null);
   };
 
   return (
     <div className={css.app}>
       <SearchBar onSubmit={onSubmit} />
-      {isLoading && <Loder />}
+      {page === 1 && isLoading && <Loder />}
       {error && <ErrrMessage />}
       {imgs && imgs.length === 0 && !isLoading && (
         <p>No results found for &quot;{query}&quot;</p>
       )}
       <ImageGallery imgs={imgs} onImageClick={openModal} />
-      {page < totalPages && <LoadMoreBtn handleClick={handleClick} />}
+      {page < totalPages && !isLoading ? (
+        <LoadMoreBtn handleClick={handleClick} />
+      ) : page !== 1 && isLoading ? (
+        <Loder />
+      ) : null}
       {selectedImage && (
         <ImageModal
           isOpen={isModalOpen}

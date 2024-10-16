@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import { axiosImg } from '../../services/api';
 
 import SearchBar from '../searchBar/SearchBar';
-import Loder from '../loader/Loader';
-import ErrrMessage from '../errorMessage/ErrorMessage';
+import Loader from '../loader/Loader';
+import ErrorMessage from '../errorMessage/ErrorMessage';
 import ImageGallery from '../imageGallery/ImageGallery';
 import LoadMoreBtn from '../loadMoreBtn/LoadMoreBtn';
 import ImageModal from '../imageModal/ImageModal';
@@ -77,17 +77,15 @@ function App() {
   return (
     <div className={css.app}>
       <SearchBar onSubmit={onSubmit} />
-      {page === 1 && isLoading && <Loder />}
-      {error && <ErrrMessage />}
+      {error && <ErrorMessage />}
       {imgs && imgs.length === 0 && !isLoading && (
         <p>No results found for &quot;{query}&quot;</p>
       )}
       <ImageGallery imgs={imgs} onImageClick={openModal} />
-      {page < totalPages && !isLoading ? (
+      {isLoading && <Loader />}
+      {page < totalPages && !isLoading && (
         <LoadMoreBtn handleClick={handleClick} />
-      ) : page !== 1 && isLoading ? (
-        <Loder />
-      ) : null}
+      )}
       {selectedImage && (
         <ImageModal
           isOpen={isModalOpen}
